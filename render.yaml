@@ -1,28 +1,52 @@
 services:
   - type: web
     name: transroute-fms
-    env: docker
-    region: oregon
-    plan: starter
-    branch: main
-    dockerfilePath: fms/Dockerfile
-    autoDeploy: true
+    env: php
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
     envVars:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: 'false'
+        value: false
+      - key: APP_KEY
+        generateValue: true
       - key: APP_URL
-        value: https://your-app.onrender.com
+        value: https://transroute-fms.onrender.com
       - key: DB_CONNECTION
         value: mysql
-      - key: CACHE_DRIVER
-        value: file
+      - key: DB_HOST
+        fromDatabase:
+          name: transroute-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: transroute-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: transroute-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: transroute-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: transroute-db
+          property: password
       - key: SESSION_DRIVER
         value: file
+      - key: CACHE_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
 
 databases:
-  - name: transroute-fms-db
+  - name: transroute-db
     databaseName: transroute_fms
-    region: oregon
-    plan: starter
+    plan: free
