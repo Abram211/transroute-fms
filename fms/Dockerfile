@@ -28,7 +28,6 @@ COPY . /var/www/html
 RUN php artisan package:discover --ansi \
     && cp .env.example .env \
     && php artisan key:generate \
-    && php artisan config:cache \
     && chmod -R 775 storage bootstrap/cache
 
 ENV PORT=8000

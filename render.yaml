@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: transroute-fms
+    env: docker
+    region: oregon
+    plan: starter
+    branch: main
+    dockerfilePath: fms/Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: 'false'
+      - key: APP_URL
+        value: https://your-app.onrender.com
+      - key: DB_CONNECTION
+        value: mysql
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+
+databases:
+  - name: transroute-fms-db
+    databaseName: transroute_fms
+    region: oregon
+    plan: starter
