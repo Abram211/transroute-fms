@@ -1,13 +1,9 @@
 services:
   - type: web
     name: transroute-fms
-    env: php
-    buildCommand: |
-      composer install --no-dev --optimize-autoloader
-      php artisan config:cache
-      php artisan route:cache
-      php artisan view:cache
-    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+    runtime: docker
+    dockerContext: ./fms
+    dockerfilePath: ./fms/Dockerfile
     envVars:
       - key: APP_ENV
         value: production

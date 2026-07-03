@@ -1,0 +1,319 @@
+﻿Title: Render Docs | Render
+
+URL Source: http://render.com/docs/blueprint-yaml-reference
+
+Warning: Target URL returned error 404: Not Found
+
+Markdown Content:
+Opens in a new window Opens an external website Opens an external website in a new window
+
+This website utilizes technologies such as cookies to enable essential site functionality, as well as for analytics, personalization, and targeted advertising. To learn more, view the following link: [Privacy Policy](https://render.com/privacy)
+
+[](http://render.com/)
+*   [Docs](http://render.com/docs)
+*   [Changelog](http://render.com/changelog)
+
+Search Ask AI
+
+[Sign In](https://dashboard.render.com/)[Get Started](https://dashboard.render.com/register)
+
+Navigate
+
+Start
+
+    *   [Home](http://render.com/docs)
+    *   [Your first deploy](http://render.com/docs/your-first-deploy)
+    *   [Free instances](http://render.com/docs/free)
+    *   [Platform features by plan](http://render.com/docs/platform-features-by-plan)
+    *   [Use with coding agents](http://render.com/docs/llm-support)
+    *   [FAQ](http://render.com/docs/faq)
+    *   [Templates](https://render.com/templates)
+
+    
+        *   Migrate from…
+
+        
+            *   [Heroku](http://render.com/docs/migrate-from-heroku)
+            *   [Railway](http://render.com/docs/migrate-from-railway)
+
+Compute
+
+    *   [Instance types (compute specs)](http://render.com/docs/compute-plans)
+    *   [Multi-service architectures](http://render.com/docs/multi-service-architecture)
+
+    
+        *   Service types
+
+        
+            *   [Which to use?](http://render.com/docs/service-types)
+            *   [Static sites](http://render.com/docs/static-sites)
+            *   [Web services](http://render.com/docs/web-services)
+            *   [Private services](http://render.com/docs/private-services)
+            *   [Background workers](http://render.com/docs/background-workers)
+            *   [Cron jobs](http://render.com/docs/cronjobs)
+            *   [Workflows Beta](http://render.com/docs/workflows-redirect)
+
+Deploys
+
+    *   [How deploys work](http://render.com/docs/deploys)
+    *   [Supported languages](http://render.com/docs/language-support)
+    *   [Build pipeline](http://render.com/docs/build-pipeline)
+    *   [Deploy hooks](http://render.com/docs/deploy-hooks)
+    *   [Troubleshooting deploys](http://render.com/docs/troubleshooting-deploys)
+
+    
+        *   Previewing changes
+
+        
+            *   [Single-service previews](http://render.com/docs/service-previews)
+            *   [Preview environments (multi-service)](http://render.com/docs/preview-environments)
+
+    
+        *   Docker deploys
+
+        
+            *   [Overview](http://render.com/docs/docker)
+            *   [Deploy a registered image](http://render.com/docs/deploying-an-image)
+            *   [Using secrets](http://render.com/docs/docker-secrets)
+
+    
+        *   Git providers
+
+        
+            *   [GitHub](http://render.com/docs/github)
+            *   [GitLab](http://render.com/docs/gitlab)
+            *   [Bitbucket](http://render.com/docs/bitbucket)
+            *   [Deploying a specific commit](http://render.com/docs/deploying-a-commit)
+            *   [Monorepo support](http://render.com/docs/monorepo-support)
+
+    
+        *   Runtime
+
+        
+            *   [Native runtimes](http://render.com/docs/native-runtimes)
+            *   [Environment variables & secrets](http://render.com/docs/configure-environment-variables)
+            *   [Default environment variables](http://render.com/docs/environment-variables)
+
+Workflows Beta
+
+    *   [Intro to workflows](http://render.com/docs/workflows)
+    *   [Tutorial](http://render.com/docs/workflows-tutorial)
+    *   [Limits & pricing](http://render.com/docs/workflows-limits)
+
+    
+        *   How to…
+
+        
+            *   [Define tasks](http://render.com/docs/workflows-defining)
+            *   [Trigger runs](http://render.com/docs/workflows-running)
+            *   [Develop locally](http://render.com/docs/workflows-local-development)
+
+    
+        *   SDK reference
+
+        
+            *   [TypeScript SDK](http://render.com/docs/workflows-sdk-typescript)
+            *   [Python SDK](http://render.com/docs/workflows-sdk-python)
+
+    
+        *   Example workflows
+
+        
+            *   [TypeScript examples](https://github.com/render-examples/render-workflows-examples-ts)
+            *   [Python examples](https://github.com/render-examples/render-workflows-examples-python)
+
+Datastores
+
+    *   [Persistent disks](http://render.com/docs/disks)
+
+    
+        *   Key Value (Redis®-compatible)
+
+        
+            *   [Creating & connecting](http://render.com/docs/key-value)
+            *   [Valkey/Redis FAQ](http://render.com/docs/valkey-faq)
+
+    
+        *   Postgres databases
+
+        
+            *   [Overview](http://render.com/docs/postgresql)
+            *   [Creating & connecting](http://render.com/docs/postgresql-creating-connecting)
+            *   [Recovery & backups](http://render.com/docs/postgresql-backups)
+            *   [Database credentials](http://render.com/docs/postgresql-credentials)
+            *   [Read replicas](http://render.com/docs/postgresql-read-replicas)
+            *   [High availability](http://render.com/docs/postgresql-high-availability)
+            *   [Admin apps](http://render.com/docs/postgresql-apps)
+            *   [Extensions](http://render.com/docs/postgresql-extensions)
+            *   [Version upgrades](http://render.com/docs/postgresql-upgrading)
+            *   [Logical replication](http://render.com/docs/postgresql-logical-replication)
+            *   [Connection pooling New](http://render.com/docs/postgresql-connection-pooling)
+            *   [Troubleshooting performance](http://render.com/docs/postgresql-performance-troubleshooting)
+            *   [Flexible plans](http://render.com/docs/postgresql-refresh)
+            *   [Legacy instance types](http://render.com/docs/postgresql-legacy-instance-types)
+
+Networking
+
+    *   [Regions](http://render.com/docs/regions)
+    *   [Inbound IP rules](http://render.com/docs/inbound-ip-rules)
+    *   [Edge caching](http://render.com/docs/web-service-caching)
+    *   [WebSockets](http://render.com/docs/websocket)
+    *   [TLS certificates](http://render.com/docs/tls)
+
+    
+        *   Custom domains
+
+        
+            *   [Overview](http://render.com/docs/custom-domains)
+            *   [Cloudflare](http://render.com/docs/configure-cloudflare-dns)
+            *   [Namecheap](http://render.com/docs/configure-namecheap-dns)
+            *   [Other DNS providers](http://render.com/docs/configure-other-dns)
+
+    
+        *   Internal traffic
+
+        
+            *   [Private network](http://render.com/docs/private-network)
+            *   [Private links](http://render.com/docs/private-link)
+
+    
+        *   Outbound traffic
+
+        
+            *   [Default IP ranges](http://render.com/docs/outbound-ip-addresses)
+            *   [Dedicated IP addresses New](http://render.com/docs/dedicated-ips)
+            *   [Outbound bandwidth](http://render.com/docs/outbound-bandwidth)
+
+    
+        *   Static site config
+
+        
+            *   [Custom response headers](http://render.com/docs/static-site-headers)
+            *   [Redirects & rewrites](http://render.com/docs/redirects-rewrites)
+
+Operational Controls
+
+    *   [The Render Dashboard](http://render.com/docs/render-dashboard)
+    *   [SSH / Shell access](http://render.com/docs/ssh)
+    *   [Projects & environments](http://render.com/docs/projects)
+
+    
+        *   Service actions
+
+        
+            *   [Scaling](http://render.com/docs/scaling)
+            *   [Rollbacks](http://render.com/docs/rollbacks)
+            *   [Maintenance mode](http://render.com/docs/maintenance-mode)
+            *   [One-off jobs](http://render.com/docs/one-off-jobs)
+
+    
+        *   Infrastructure as code
+
+        
+            *   [Blueprints overview](http://render.com/docs/infrastructure-as-code)
+            *   [render.yaml reference](http://render.com/docs/blueprint-spec)
+            *   [Terraform provider](http://render.com/docs/terraform-provider)
+
+Observability
+
+    *   [Health checks](http://render.com/docs/health-checks)
+    *   [Uptime best practices](http://render.com/docs/uptime-best-practices)
+
+    
+        *   Notifications
+
+        
+            *   [Webhooks](http://render.com/docs/webhooks)
+            *   [Email / Slack](http://render.com/docs/notifications)
+
+    
+        *   Metrics
+
+        
+            *   [In-dashboard metrics](http://render.com/docs/service-metrics)
+            *   [OpenTelemetry streaming](http://render.com/docs/metrics-streams)
+
+    
+        *   Logging
+
+        
+            *   [In-dashboard logs](http://render.com/docs/logging)
+            *   [Log streams (syslog/HTTPS)](http://render.com/docs/log-streams)
+
+Integrations
+
+    *   [MCP Server](http://render.com/docs/mcp-server)
+
+    
+        *   Render CLI
+
+        
+            *   [Overview](http://render.com/docs/cli)
+            *   [Command reference](http://render.com/docs/cli-reference)
+
+    
+        *   REST API
+
+        
+            *   [Overview](http://render.com/docs/api)
+            *   [API reference](https://api-docs.render.com/)
+
+    
+        *   Third-party connections
+
+        
+            *   [AWS OIDC Beta](http://render.com/docs/oidc)
+            *   [Datadog](http://render.com/docs/datadog)
+
+User Management
+
+    *   [Workspaces, members, & roles](http://render.com/docs/team-members)
+    *   [New workspace plans](http://render.com/docs/new-workspace-plans)
+    *   [Login settings](http://render.com/docs/login-settings)
+    *   [Audit logs](http://render.com/docs/audit-logs)
+
+    
+        *   Organizations
+
+        
+            *   [Overview](http://render.com/docs/organizations)
+            *   [SAML SSO](http://render.com/docs/saml-sso)
+
+Platform Protections
+
+    *   [DDoS protection](http://render.com/docs/ddos-protection)
+    *   [Platform maintenance](http://render.com/docs/platform-maintenance)
+
+    
+        *   Compliance
+
+        
+            *   [Overview](http://render.com/docs/certifications-compliance)
+            *   [HIPAA (US health data)](http://render.com/docs/hipaa-compliance)
+            *   [HIPAA best practices](http://render.com/docs/hipaa-best-practices)
+            *   [Shared responsibility model](http://render.com/docs/shared-responsibility-model)
+            *   [Pentest policy](http://render.com/docs/penetration-testing)
+
+Compare
+
+    *   [Heroku vs Render](http://render.com/docs/render-vs-heroku-comparison)
+    *   [Vercel vs Render](http://render.com/docs/render-vs-vercel-comparison)
+
+# 404 Not Found
+
+The page you're looking for might have moved.
+
+Is it one of these?
+
+*   [_Blueprint_ _YAML_ _Reference_ es. To _reference_ a value from most service types, use the fromService field. To _reference_ from Render Postgres, use fromDatabase. See example definitions below. All fields shown in each example are](http://render.com/docs/blueprint-spec)
+*   [Render Key Value nce creation: Persistence mode Description AOF RDB Journal + Snapshot Append all writes to a journal and periodically save a snapshot to disk. Journal writes occur once per second via the confi](http://render.com/docs/key-value)
+*   [Custom Domains on Render You can apply your own custom domains to Render web services and static sites. Services with a custom domain also keep their onrender.com subdomain. Your workspace includes an amount of custom domain](http://render.com/docs/custom-domains)
+
+*   [Pricing](http://render.com/pricing)
+*   [Blog](http://render.com/blog)
+*   [Security](http://render.com/security)
+*   [Customers](http://render.com/customers)
+*   [Careers](http://render.com/careers)
+
+*   © Render 2026
+

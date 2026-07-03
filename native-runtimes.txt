@@ -1,0 +1,116 @@
+﻿Title: Native Runtimes
+
+URL Source: http://render.com/docs/native-runtimes
+
+Markdown Content:
+Render services provide **native runtimes** that enable you to build and deploy your application using common language environments.
+
+Render's native runtimes include:
+
+*   Automated builds and deploys for supported languages in both public and private Git repositories
+*   [Infrastructure as Code](https://render.com/docs/infrastructure-as-code) support with [`render.yaml`](https://render.com/docs/blueprint-spec)
+*   Regular updates to native runtimes to improve functionality, security, and performance
+
+All native runtimes come with standard Render features like:
+
+*   [Private networking](https://render.com/docs/private-services), load balancing, and service discovery
+*   [Persistent block storage](https://render.com/docs/disks)
+*   Automatic [Brotli](https://en.wikipedia.org/wiki/Brotli) and [gzip](https://en.wikipedia.org/wiki/Gzip) compression for faster responses
+*   Easy HTTP [health checks](https://render.com/docs/health-checks) and [zero-downtime deploys](https://render.com/docs/deploys#zero-downtime-deploys).
+*   Automatic [pull request previews](https://render.com/docs/service-previews)
+*   Native HTTP/2 support
+*   [DDoS protection](https://render.com/docs/ddos-protection)
+*   Automatic HTTP → HTTPS redirects
+
+Render provides native runtimes for Node.js / Bun, Python, Ruby, Go, Rust, and Elixir.
+
+For details, see [Supported Languages](https://render.com/docs/language-support).
+
+If you've recently created a service with an incorrect runtime, the fastest fix is usually to create a _new_ service with the correct runtime.
+
+You can also change an existing service's runtime in any of the following ways:
+
+*   Make an HTTP call to the Render API's [Update service](https://api-docs.render.com/reference/update-service) endpoint. 
+    *   Specify a new `runtime` via the `serviceDetails` parameter you provide in your request.
+
+*   If you're managing your service with [Render Blueprints](https://render.com/docs/infrastructure-as-code), update the service's `runtime` field in your `render.yaml` file, then sync your Blueprint.
+
+## [](http://render.com/docs/native-runtimes#tools-and-utilities)Tools and utilities
+
+The tools and utilities listed below are available for native builds and deploys.
+
+If your build requires a tool that _isn't_ listed below, you can [deploy with Docker](https://render.com/docs/docker) instead of building natively.
+
+*   bun
+*   curl
+*   ffmpeg
+*   g++
+*   gcc
+*   gettext
+*   git
+*   gnupg2
+*   jq
+*   libvips-dev
+*   libvips-tools
+*   make
+*   nano
+*   node
+*   npm
+*   pandoc
+*   pigz
+*   pnpm
+*   postgresql-client
+*   princexml
+*   python3-dev
+*   python3-pip
+*   python3-setuptools
+*   rsync
+*   sqlite3
+*   swig
+*   typescript
+*   unzip
+*   vim
+*   webpack
+*   wget
+*   yarn
+*   zip
+
+*   bun
+*   curl
+*   ffmpeg
+*   g++
+*   gcc
+*   gettext
+*   ghostscript
+*   git
+*   gnupg2
+*   imagemagick
+*   jq
+*   libvips-dev
+*   libvips-tools
+*   make
+*   nano
+*   node
+*   npm
+*   pandoc
+*   pigz
+*   pnpm
+*   postgresql-client
+*   postgresql-client-12
+*   postgresql-client-13
+*   postgresql-client-14
+*   princexml
+*   python3-dev
+*   python3-pip
+*   python3-setuptools
+*   rsync
+*   sqlite3
+*   swig
+*   typescript
+*   unzip
+*   vim
+*   webpack
+*   wget
+*   yarn
+*   zip
+

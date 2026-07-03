@@ -1,0 +1,951 @@
+﻿Title: Blueprint YAML Reference
+
+URL Source: http://render.com/docs/blueprint-spec
+
+Markdown Content:
+Every [Render Blueprint](https://render.com/docs/infrastructure-as-code) is backed by a YAML file that defines a set of interconnected services, databases, and environment groups. By default, this file has the name `render.yaml` and resides in your Git repository's root directory (you can customize this during [setup](https://render.com/docs/infrastructure-as-code#setup)).
+
+This reference page provides an [example Blueprint file](http://render.com/docs/blueprint-spec#example-blueprint-file), along with documentation for supported fields.
+
+The following `render.yaml` file demonstrates usage for _most_ supported fields. These fields are documented in further detail below.
+
+**Show example Blueprint file**
+
+render.yaml
+
+yaml
+
+previews:
+
+generation: automatic
+
+services:
+
+- type: web
+
+runtime: ruby
+
+name: sinatra-app
+
+repo: https://github.com/render-examples/sinatra
+
+numInstances: 3
+
+region: frankfurt
+
+plan: standard
+
+branch: prod
+
+buildCommand: bundle install
+
+preDeployCommand: bundle exec ruby migrate.rb
+
+startCommand: bundle exec ruby main.rb
+
+autoDeployTrigger: 'off'
+
+maxShutdownDelaySeconds: 120
+
+initialDeployHook: ./seed_database.sh
+
+domains:
+
+- example.com
+
+- www.example.org
+
+renderSubdomainPolicy: disabled
+
+envVars:
+
+- key: API_BASE_URL
+
+value: https://api.example.com
+
+- key: APP_SECRET
+
+generateValue: true
+
+- key: STRIPE_API_KEY
+
+sync: false
+
+- key: DATABASE_URL
+
+fromDatabase:
+
+name: mydatabase
+
+property: connectionString
+
+- key: MINIO_PASSWORD
+
+fromService:
+
+name: minio
+
+type: pserv
+
+envVarKey: MINIO_ROOT_PASSWORD
+
+- fromGroup: my-env-group
+
+ipAllowList:
+
+- source: 203.0.113.4/30
+
+description: office
+
+- source: 198.51.100.1
+
+description: home
+
+- type: web
+
+runtime: docker
+
+name: webdis
+
+repo: https://github.com/render-examples/webdis.git
+
+rootDir: webdis
+
+dockerCommand: ./webdis.sh
+
+scaling:
+
+minInstances: 1
+
+maxInstances: 3
+
+targetMemoryPercent: 60
+
+targetCPUPercent: 60
+
+maintenanceMode:
+
+enabled: true
+
+uri: https://example.com/maintenance
+
+healthCheckPath: /
+
+registryCredential:
+
+fromRegistryCreds:
+
+name: my-credentials
+
+envVars:
+
+- key: REDIS_HOST
+
+fromService:
+
+type: keyvalue
+
+name: lightning
+
+property: host
+
+- key: REDIS_PORT
+
+fromService:
+
+type: keyvalue
+
+name: lightning
+
+property: port
+
+- fromGroup: conc-settings
+
+- type: pserv
+
+runtime: docker
+
+name: minio
+
+repo: https://github.com/render-examples/minio.git
+
+envVars:
+
+- key: MINIO_ROOT_PASSWORD
+
+generateValue: true
+
+- key: MINIO_ROOT_USER
+
+sync: false
+
+- key: PORT
+
+value: 10000
+
+disk:
+
+name: data
+
+mountPath: /data
+
+sizeGB: 10
+
+- type: cron
+
+name: date
+
+runtime: python
+
+schedule: '0 * * * *'
+
+buildCommand: 'true'
+
+startCommand: date
+
+repo: https://github.com/render-examples/docker.git
+
+- type: worker
+
+name: queue
+
+runtime: docker
+
+dockerfilePath: ./sub/Dockerfile
+
+dockerContext: ./sub/src
+
+branch: queue
+
+- type: web
+
+name: my-blog
+
+runtime: static
+
+buildCommand: yarn build
+
+staticPublishPath: ./build
+
+previews:
+
+generation: automatic
+
+buildFilter:
+
+paths:
+
+- src/**/*.js
+
+ignoredPaths:
+
+- src/**/*.test.js
+
+headers:
+
+- path: /*
+
+name: X-Frame-Options
+
+value: sameorigin
+
+routes:
+
+- type: redirect
+
+source: /old
+
+destination: /new
+
+- type: rewrite
+
+source: /a/*
+
+destination: /a
+
+ipAllowList:
+
+- source: 203.0.113.4/30
+
+description: office
+
+- source: 198.51.100.1
+
+description: home
+
+- type: keyvalue
+
+name: lightning
+
+ipAllowList:
+
+- source: 0.0.0.0/0
+
+description: everywhere
+
+plan: free
+
+maxmemoryPolicy: noeviction
+
+persistenceMode: off
+
+databases:
+
+- name: elephant
+
+databaseName: mydb
+
+user: adrian
+
+ipAllowList:
+
+- source: 203.0.113.4/30
+
+description: office
+
+- source: 198.51.100.1
+
+description: home
+
+readReplicas:
+
+- name: elephant-replica
+
+- name: private database
+
+databaseName: private
+
+ipAllowList: []
+
+- name: pachyderm
+
+plan: basic-1gb
+
+diskSizeGB: 35
+
+storageAutoscalingEnabled: true
+
+- name: highly available database
+
+plan: pro-8gb
+
+highAvailability:
+
+enabled: true
+
+envVarGroups:
+
+- name: conc-settings
+
+envVars:
+
+- key: CONCURRENCY
+
+value: 2
+
+- key: SECRET
+
+generateValue: true
+
+- name: stripe
+
+envVars:
+
+- key: STRIPE_API_URL
+
+value: https://api.stripe.com/v2
+
+You can validate the structure of your Blueprint file directly from your IDE. Additionally, the Render CLI and API both provide Blueprint validation capabilities for programmatic use.
+
+The Render Blueprint specification is served from [SchemaStore.org](https://www.schemastore.org/), which many popular IDEs use to provide live validation and autocompletion for JSON and YAML files.
+
+For VS Code / Cursor, install the [YAML extension by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) to enable validation of your Blueprint file:
+
+![Image 1: render.yaml validation in VS Code](https://render.com/docs-assets/1f8b16610e4e46f9cae396a629185be2573d4b05a2ace7c06f8fc1f63188dd18/blueprint-validation-vscode.png)
+
+If your IDE _doesn't_ integrate with SchemaStore.org, the Blueprint specification is also hosted in JSON Schema format at the following URL:
+
+plaintext
+
+https://render.com/schema/render.yaml.json
+
+Consult your IDE's documentation to learn how to use this schema for validation.
+
+**Requires v2.7.0 or later of the Render CLI.**
+
+See [upgrade instructions](https://render.com/docs/cli#1-install-or-upgrade).
+
+Validate your Blueprint file with the following Render CLI command (substitute your file's name if it differs):
+
+shell
+
+$ render blueprints validate render.yaml
+
+services[0].branch (line 19, column 5): branch prod could not be found
+
+Error: /Users/example/my-project/render.yaml has validation errors
+
+This command exits with a non-zero status if the file fails validation.
+
+**Get started with the [Render API](https://render.com/docs/api).**
+
+Validate your Blueprint file with the Render API's [Validate Blueprint endpoint](https://api-docs.render.com/reference/validate-blueprint).
+
+The `valid` field in the response body is `true` if the file passes validation and `false` if it fails. The response code is `200` in either case.
+
+The following fields are valid at the root level of a Blueprint file:
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#services)`services` | A list of _non-Postgres_ services to manage with the Blueprint. Each entry is an object that represents a single service. See all [service fields](http://render.com/docs/blueprint-spec#service-fields). Services in this top-level list keep their currently assigned environment (if any) after each sync. * To move a service into a specific environment, instead define it in the `services` list for that [environment](http://render.com/docs/blueprint-spec#environment-fields). * To remove a service from its current environment, instead define it under the [`ungrouped`](http://render.com/docs/blueprint-spec#ungrouped) field. **Do not define the same service in more than one location.** |
+| ###### [](http://render.com/docs/blueprint-spec#databases)`databases` | A list of Postgres databases to manage with the Blueprint. Each entry is an object that represents a single database. See all [database fields](http://render.com/docs/blueprint-spec#database-fields). Databases in this top-level list keep their currently assigned environment (if any) after each sync. * To move a database into a specific environment, instead define it in the `databases` list for that [environment](http://render.com/docs/blueprint-spec#environment-fields). * To remove a database from its current environment, instead define it under the [`ungrouped`](http://render.com/docs/blueprint-spec#ungrouped) field. **Do not define the same database in more than one location.** |
+| ###### [](http://render.com/docs/blueprint-spec#envvargroups)`envVarGroups` | A list of [environment groups](https://render.com/docs/configure-environment-variables#environment-groups) to manage with the Blueprint. Each entry is an object that represents a single environment group. See [supported fields](http://render.com/docs/blueprint-spec#environment-groups). Environment groups in this top-level list keep their currently assigned environment (if any) after each sync. * To move an environment group into a specific environment, instead define it in the `envVarGroups` list for that [environment](http://render.com/docs/blueprint-spec#environment-fields). * To remove an environment group from its current environment, instead define it under the [`ungrouped`](http://render.com/docs/blueprint-spec#ungrouped) field. **Do not define the same environment group in more than one location.** |
+| ###### [](http://render.com/docs/blueprint-spec#projects)`projects` | A list of [projects](https://render.com/docs/projects) to manage with the Blueprint. A project defines one or more `environments`, each of which lists the services and environment groups that belong to it. For details, see [Projects and environments](http://render.com/docs/blueprint-spec#projects-and-environments). |
+| ###### [](http://render.com/docs/blueprint-spec#ungrouped)`ungrouped` | An object for defining resources that should not belong to any [environment](http://render.com/docs/blueprint-spec#projects-and-environments). Can contain optional fields `services`, `databases`, and `envVarGroups`, each of which matches the format of its root-level counterpart. yaml ungrouped: services: - type: web name: my-service Moving a resource definition into this object removes it from its current [environment](http://render.com/docs/blueprint-spec#projects-and-environments), guaranteeing that it is "ungrouped". In contrast, root-level definitions keep their currently assigned environment (if any). **Do not define the same resource in more than one location.** |
+| ###### [](http://render.com/docs/blueprint-spec#previewsgeneration)`previews.generation` | The generation mode to use for [preview environments](https://render.com/docs/preview-environments). yaml previews: generation: manual Supported values include: * `off` * `manual` * `automatic` For details on each, see [Manual vs. automatic preview environments](https://render.com/docs/preview-environments#manual-vs-automatic-preview-environments). If you omit this field, preview environments are disabled for any linked Blueprints. Setting the deprecated field `previewsEnabled: true` is equivalent to setting this field to `automatic`. This field does not affect configuration for individual [service previews](https://render.com/docs/service-previews). |
+| ###### [](http://render.com/docs/blueprint-spec#previewsexpireafterdays)`previews.expireAfterDays` | The number of days to retain a [preview environment](https://render.com/docs/preview-environments) that receives no updates. After this period, Render automatically deprovisions the preview environment to help reduce your compute costs. By default, preview environments are retained indefinitely until their associated pull request is closed. For details, see [Automatic expiration](https://render.com/docs/preview-environments#automatic-expiration). |
+
+Each entry in a Blueprint file's `services` list is an object that represents a single, _non-Postgres_ service. (You define Postgres databases in the [`databases` list](http://render.com/docs/blueprint-spec#database-fields).)
+
+See below for supported fields.
+
+These fields pertain to a service's core configuration (name, runtime, region, and so on).
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#name)`name` | **Required.** The service's name. Provide a unique name for each service in your Blueprint file. If you add the name of an _existing_ service to your Blueprint file, Render attempts to apply the Blueprint's configuration to that existing service. |
+| ###### [](http://render.com/docs/blueprint-spec#type)`type` | **Required.** The type of service. One of the following: * `web` for a web service _or_ static site * For a static site, you also set [`runtime: static`](http://render.com/docs/blueprint-spec#runtime). * `pserv` for a private service * `worker` for a background worker * `cron` for a cron job * `keyvalue` for a Render Key Value instance * `redis` is a deprecated alias for `keyvalue`. You can't modify this value after creation. You define Render Postgres databases separately, in the [`databases`](http://render.com/docs/blueprint-spec#database-fields) list. |
+| ###### [](http://render.com/docs/blueprint-spec#runtime)`runtime` | **Required** unless [`type`](http://render.com/docs/blueprint-spec#type) is `keyvalue` or `redis`. The service's runtime. Supported values include: **Native language runtimes** * `node` * `python` * `elixir` * `go` * `ruby` * `rust` **Special-case runtimes** * `docker` for services that [build an image](https://render.com/docs/docker#building-from-a-dockerfile) from a Dockerfile. * `image` for services that [pull a prebuilt image](https://render.com/docs/deploying-an-image) from a registry. * `static` for static sites You can't modify this value after creation. This field replaces the `env` field (`env` is still supported but is discouraged). |
+| ###### [](http://render.com/docs/blueprint-spec#plan)`plan` | The service's instance type ([see pricing](https://render.com/pricing#services)). One of the following: * `free` (not available for private services, background workers, or cron jobs) * `starter` * `standard` * `pro` * `pro plus` The following additional instance types are available for web services, private services, and background workers: * `pro max` * `pro ultra` **If you omit this field:** * Render uses `starter` for a new service. * Render retains the current instance type for an existing service. |
+| ###### [](http://render.com/docs/blueprint-spec#previewsgeneration-1)`previews.generation` | The preview generation mode to use for this service's [pull request previews](https://render.com/docs/service-previews). Supported values include: * `manual` * `automatic` For details on each, see [Manual vs. automatic PR previews](https://render.com/docs/service-previews#manual-vs-automatic-pr-previews). If you omit this field, pull request previews are disabled for the service. Setting the deprecated field `pullRequestPreviewsEnabled: true` is equivalent to setting this field to `automatic`. This field does not affect configuration for [preview environments](https://render.com/docs/preview-environments). |
+| ###### [](http://render.com/docs/blueprint-spec#previewsnuminstances)`previews.numInstances` | The number of instances to use for this service in [preview environments](https://render.com/docs/preview-environments). If you omit this field, preview instances use the same number of instances as the base service. If the base service uses autoscaling, preview instances use the minimum number of instances for the base service. |
+| ###### [](http://render.com/docs/blueprint-spec#previewsplan)`previews.plan` | The instance type to use for this service in [preview environments](https://render.com/docs/preview-environments). If you omit this field, preview instances use the same instance type as the base service. |
+| ###### [](http://render.com/docs/blueprint-spec#ipallowlist)`ipAllowList` | **Web services and static sites only. Requires a Scale or Enterprise [plan](https://render.com/pricing).** A list of the IP address ranges allowed to connect to your service over the public internet. **If you omit this field:** * Render allows all IPs for a new service. * Render retains the current IP ranges for an existing service. For details, see [Inbound IP rules](http://render.com/docs/blueprint-spec#inbound-ip-rules). |
+| ###### [](http://render.com/docs/blueprint-spec#buildcommand)`buildCommand` | **Required** for non-Docker-based services. The command that Render runs to [build your service](https://render.com/docs/deploys#build-command). Basic examples include: * `npm install` (Node.js) * `pip install -r requirements.txt` (Python) |
+| ###### [](http://render.com/docs/blueprint-spec#startcommand)`startCommand` | **Required** for non-Docker-based services. The command that Render runs to [start your service](https://render.com/docs/deploys#start-command). Basic examples include: * `npm start` (Node.js) * `gunicorn your_application.wsgi` (Python) Docker-based services set the optional [`dockerCommand`](http://render.com/docs/blueprint-spec#dockercommand) field instead of this field. |
+| ###### [](http://render.com/docs/blueprint-spec#schedule)`schedule` | **Required** for cron jobs, omit otherwise. The schedule for running the cron job, as a [cron expression](https://render.com/docs/cronjobs#setup). |
+| ###### [](http://render.com/docs/blueprint-spec#predeploycommand)`preDeployCommand` | If specified, this command runs _after_ the service’s [`buildCommand`](http://render.com/docs/blueprint-spec#buildcommand) but _before_ its [`startCommand`](http://render.com/docs/blueprint-spec#startcommand). For static sites, it runs after the build completes and before deployment. Recommended for running database migrations and other pre-deploy tasks. Learn more about the [pre-deploy command](https://render.com/docs/deploys#pre-deploy-command). |
+| ###### [](http://render.com/docs/blueprint-spec#region)`region` | The region to deploy the service to. One of the following: * `oregon` (default) * `ohio` * `virginia` * `frankfurt` * `singapore` You can't modify this value after creation. This field does not apply to static sites. If omitted, the default value is `oregon`. |
+| ###### [](http://render.com/docs/blueprint-spec#repo)`repo` | For Git-based services, the URL of the GitHub/GitLab repo to use. Your Git provider account must have access to the repo. If omitted, Render uses the repo that contains the Blueprint file. For services that pull a prebuilt Docker image, set [`image`](http://render.com/docs/blueprint-spec#image) instead of this field. |
+| ###### [](http://render.com/docs/blueprint-spec#branch)`branch` | For Git-based services, the branch of the linked [`repo`](http://render.com/docs/blueprint-spec#repo) to use. If omitted, Render uses the repo's default branch. **If you're using [preview environments](https://render.com/docs/preview-environments), you probably _don't_ want to set this field.** If you _do_ set it, Render uses the specified branch in all preview environments, _instead of_ your pull request's associated branch. This prevents you from testing code changes in the preview environment. |
+| ###### [](http://render.com/docs/blueprint-spec#autodeploytrigger)`autoDeployTrigger` | Sets the [automatic deploy](https://render.com/docs/deploys#configuring-auto-deploys) behavior for a Git-based service. This field replaces the deprecated `autoDeploy` field. If you include both, this field takes precedence. One of the following: * `commit`: Trigger a deploy on each commit to the service's linked branch. * Equivalent to the deprecated setting `autoDeploy: true` * `checksPass`: Trigger a deploy only if the linked branch's CI checks pass. * `off`: Disable auto-deploys. * Equivalent to the deprecated setting `autoDeploy: false` This field has no effect for services that [deploy a prebuilt Docker image](https://render.com/docs/deploying-an-image). **If you omit this field:** * Render uses `commit` for a new service. * Render retains the current value for an existing service. |
+| ###### [](http://render.com/docs/blueprint-spec#domains)`domains` | Web services and static sites only. A list of [custom domains](https://render.com/docs/custom-domains) for the service. Internet-accessible services are always reachable at their `onrender.com` subdomain. For each root domain in the list, Render automatically adds a `www.` subdomain that redirects to the root domain. For each `www.` subdomain in the list, Render automatically adds the corresponding root domain and redirects it to the `www.` subdomain. |
+| ###### [](http://render.com/docs/blueprint-spec#rendersubdomainpolicy)`renderSubdomainPolicy` | Web services and static sites only. Controls whether the service is reachable at its `onrender.com` subdomain. One of the following: * `enabled`: The service is reachable at its `onrender.com` subdomain. * `disabled`: The service is **not** reachable at its `onrender.com` subdomain. Requests to the subdomain receive a 404 response. Disabling a service's `onrender.com` subdomain requires the service to have at least one custom domain. [Learn more](https://render.com/docs/custom-domains#disabling-your-onrendercom-subdomain). **If you omit this field:** * Render uses `enabled` for a new service. * Render retains the current value for an existing service. |
+| ###### [](http://render.com/docs/blueprint-spec#healthcheckpath)`healthCheckPath` | Web services only. The path of the service's [health check endpoint](https://render.com/docs/health-checks). This value always starts with a `/` character. |
+| ###### [](http://render.com/docs/blueprint-spec#maxshutdowndelayseconds)`maxShutdownDelaySeconds` | Web services, private services, and background workers only. The maximum amount of time (in seconds) that Render waits for your application process to exit gracefully after sending it a `SIGTERM` signal. For details, see [Zero-downtime deploys](https://render.com/docs/deploys#zero-downtime-deploys). After this delay, Render terminates the process with a `SIGKILL` signal if it's still running. Render most commonly shuts down instances as part of redeploying your service or scaling it down. Set this field to give instances more time to finish any existing work before termination. This value must be an integer between `1` and `300`, inclusive. If omitted, the default value is `30`. |
+| ###### [](http://render.com/docs/blueprint-spec#maintenancemode)`maintenanceMode` | Web services only. Requires a **[paid instance type](https://render.com/pricing#compute)**. Use this field to enable [maintenance mode](https://render.com/docs/maintenance-mode) for a service and temporarily disable public traffic. yaml maintenanceMode: enabled: true uri: https://example.com/maintenance Set `enabled` to `true` to enable maintenance mode or `false` to disable it. Optionally, set `uri` to an absolute URL for a custom maintenance page. The URL must _not_ point to the same service. If you omit `uri`, Render displays its [default maintenance page](https://maintenance-mode-example.onrender.com/). |
+| ###### [](http://render.com/docs/blueprint-spec#initialdeployhook)`initialDeployHook` | Web services, private services, and background workers only. Render runs this command after a service's _first_ successful deploy. Useful for one-time initialization tasks such as seeding a database or downloading files to a persistent disk. This command runs only once per service instance (including in [preview environments](https://render.com/docs/preview-environments#preview-environment-initialization)). For commands that should run before _every_ deploy, use [`preDeployCommand`](http://render.com/docs/blueprint-spec#predeploycommand) instead. `afterFirstDeployCommand` is a deprecated alias for this field. |
+
+The following fields are specific to [Docker-based services](https://render.com/docs/docker). This includes both services that build an image with a `Dockerfile` ([`runtime: docker`](http://render.com/docs/blueprint-spec#runtime)) and services that pull a prebuilt image from a registry ([`runtime: image`](http://render.com/docs/blueprint-spec#runtime)).
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#dockercommand)`dockerCommand` | The command to run when starting the Docker-based service. If omitted, Render uses the `CMD` defined in the `Dockerfile`. |
+| ###### [](http://render.com/docs/blueprint-spec#dockerfilepath)`dockerfilePath` | The path to the service's `Dockerfile`, relative to the repo root. Typically used for services in a [monorepo](https://render.com/docs/monorepo-support). If omitted, Render uses `./Dockerfile`. |
+| ###### [](http://render.com/docs/blueprint-spec#dockercontext)`dockerContext` | The path to the service's Docker build context, relative to the repo root. Typically used for services in a [monorepo](https://render.com/docs/monorepo-support). If omitted, Render uses the repo root. |
+| ###### [](http://render.com/docs/blueprint-spec#registrycredential)`registryCredential` | If your `Dockerfile` references any private images, you must specify a valid credential that can access those images. This field uses the following format: yaml registryCredential: fromRegistryCreds: name: my-credentials Add registry credentials in the [Render Dashboard](https://dashboard.render.com/) from your Workspace Settings page, or via the [Render API](https://api-docs.render.com/reference/create-registry-credential). |
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#image)`image` | Details for the Docker image to pull from a registry. This field uses the following format: yaml image: url: docker.io/my-name/my-image:latest creds: fromRegistryCreds: name: my-credential-name Provide `creds` only if you're pulling a private image. Add registry credentials in the [Render Dashboard](https://dashboard.render.com/) from your Workspace Settings page, or via the [Render API](https://api-docs.render.com/reference/create-registry-credential). For more information, see [Deploy a Prebuilt Docker Image](https://render.com/docs/deploying-an-image). |
+
+**Note the following about [scaling](https://render.com/docs/scaling):**
+
+*   You can't scale a service with an attached persistent disk.
+*   Autoscaling requires a [**Pro** workspace](https://render.com/docs/platform-features-by-plan) or higher. 
+    *   Manual scaling is available for all workspaces.
+
+*   If you add an existing service to a Blueprint, that service retains any existing autoscaling settings unless you add the [`scaling`](http://render.com/docs/blueprint-spec#scaling) field in your Blueprint.
+*   Autoscaling is disabled in [preview environments](https://render.com/docs/preview-environments). 
+    *   Instead, autoscaled services always run a number of instances equal to their [`minInstances`](http://render.com/docs/blueprint-spec#scaling-1).
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#numinstances)`numInstances` | For a [manually scaled](https://render.com/docs/scaling#manual-scaling) service, the number of instances to scale the service to. **If you omit this field:** * Render uses `1` for a new service. * Render retains the current value for an existing service. **This value has no effect for services with autoscaling enabled.** Configure autoscaling behavior with the [`scaling`](http://render.com/docs/blueprint-spec#scaling-1) field. |
+| ###### [](http://render.com/docs/blueprint-spec#scaling-1)`scaling` | For an [autoscaled](https://render.com/docs/scaling#autoscaling) service, configuration details for the service's autoscaling behavior. Example: yaml scaling: minInstances: 1 maxInstances: 3 targetMemoryPercent: 60 targetCPUPercent: 60 |
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#buildfilter)`buildFilter` | File paths in the service's repo to include or ignore when determining whether to trigger an automatic build. Especially useful for [monorepos](https://render.com/docs/monorepo-support#setting-build-filters). Build filter paths use [glob syntax](https://render.com/docs/monorepo-support#filter-syntax). They are always relative to the repo's root directory. When synced, this value _fully replaces_ an existing service's build filter settings. If you _omit_ this field for a service with existing build filter settings, Render _replaces_ those settings with empty lists. yaml buildFilter: paths: - src/**/*.js ignoredPaths: - src/**/*.test.js |
+| ###### [](http://render.com/docs/blueprint-spec#rootdir)`rootDir` | The service's root directory within its repo. Changes to files _outside_ the root directory do not trigger a build for the service. Set this when working in a [monorepo](https://render.com/docs/monorepo-support#setting-a-root-directory). If omitted, Render uses the repo's root directory. |
+
+Attach a [persistent disk](https://render.com/docs/disks) to a compatible service with the `disk` field:
+
+yaml
+
+disk:
+
+name: app-data
+
+mountPath: /opt/data
+
+sizeGB: 5
+
+You can modify the `name` and `mountPath` of an existing disk. You can _increase_ the `sizeGB` of an existing disk, but you can't reduce it.
+
+The `name` field can be any string value, including simply `disk`. This value is not currently displayed in the Render Dashboard.
+
+The following fields are specific to static sites:
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#staticpublishpath)`staticPublishPath` | **Required.** The path to the directory that contains the static files to publish, relative to the repo root. Common examples include `./build` and `./dist`. |
+| ###### [](http://render.com/docs/blueprint-spec#headers)`headers` | Configuration details for a static site's [HTTP response headers](https://render.com/docs/static-site-headers). Example: yaml headers: - path: /* name: X-Frame-Options value: sameorigin - path: /blog/* name: Cache-Control value: must-revalidate You can modify existing header rules and add new ones. Render _preserves_ any existing header rules that are not included in the Blueprint file. |
+| ###### [](http://render.com/docs/blueprint-spec#routes)`routes` | Configuration details for a static site's [redirect and rewrite routes](https://render.com/docs/redirects-rewrites). Example: yaml routes: - type: redirect source: /a destination: /b - type: rewrite source: /app/* destination: /app You can modify existing routing rules and add new ones. Render _preserves_ any existing routing rules that are not included in the Blueprint file. |
+
+You define Render Key Value instances in the `services` field of `render.yaml` alongside your other non-Postgres services. A Key Value instance has the [`type`](http://render.com/docs/blueprint-spec#type)`keyvalue` (or its deprecated alias `redis`).
+
+**Show example Key Value definitions**
+
+yaml
+
+services:
+
+- type: keyvalue
+
+name: thunder
+
+ipAllowList:
+
+- source: 203.0.113.4/30
+
+description: office
+
+- source: 198.51.100.1
+
+description: home
+
+region: frankfurt
+
+plan: pro
+
+previewPlan: starter
+
+maxmemoryPolicy: allkeys-lru
+
+persistenceMode: journal-snapshot
+
+- type: keyvalue
+
+name: lightning
+
+ipAllowList:
+
+- source: 0.0.0.0/0
+
+description: everywhere
+
+- type: keyvalue
+
+name: private cache
+
+ipAllowList: []
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#ipallowlist-1)`ipAllowList` | **Required.** A list of the IP address ranges allowed to connect to your Key Value instance over the public internet. For details, see [Inbound IP rules](http://render.com/docs/blueprint-spec#inbound-ip-rules). |
+| ###### [](http://render.com/docs/blueprint-spec#maxmemorypolicy)`maxmemoryPolicy` | The Key Value instance's eviction policy for when it reaches its maximum memory limit. One of the following: * `allkeys-lru` (default) * `volatile-lru` * `allkeys-random` * `volatile-random` * `volatile-ttl` * `noeviction` For details on these policies, see the [Render Key Value documentation](https://render.com/docs/key-value#maxmemory-policy). |
+| ###### [](http://render.com/docs/blueprint-spec#persistencemode)`persistenceMode` | The Key Value instance's data persistence behavior. One of the following: * `journal-snapshot` * `snapshot` * `off` **If you omit this field:** * Render uses `journal-snapshot` for a new paid instance. * Render retains the current value for an existing paid instance. * Render uses `off` for a new free instance (data persistence is not available for free instances). For details on persistence modes, see the [Render Key Value documentation](https://render.com/docs/key-value#data-persistence). |
+
+See [Setting environment variables](http://render.com/docs/blueprint-spec#setting-environment-variables).
+
+Each entry in a Blueprint file's `databases` list is an object that represents a Render Postgres instance.
+
+See below for supported fields.
+
+**Show example database definitions**
+
+yaml
+
+databases:
+
+- name: prod
+
+postgresMajorVersion: '18'
+
+region: frankfurt
+
+plan: basic-4gb
+
+databaseName: prod_app
+
+user: app_user
+
+connectionPool: pgbouncer
+
+ipAllowList:
+
+- source: 203.0.113.4/30
+
+description: office
+
+- source: 198.51.100.1
+
+description: home
+
+readReplicas:
+
+- name: prod-replica
+
+- name: private database
+
+databaseName: private
+
+ipAllowList: []
+
+- name: highly available database
+
+plan: pro-16gb
+
+highAvailability:
+
+enabled: true
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#name-1)`name` | **Required.** The Postgres instance's name. Provide a unique name for each service in your Blueprint file. If you add the name of an _existing_ instance to your Blueprint file, Render attempts to apply the Blueprint's configuration to that existing instance. You can't modify this value after creation. |
+| ###### [](http://render.com/docs/blueprint-spec#plan-1)`plan` | The database's instance type ([see pricing](https://render.com/pricing#postgresql)). One of the following: **View values for `plan`** **Current instance types:** * `free` * `basic-256mb` * `basic-1gb` * `basic-4gb` * `pro-4gb` * `pro-8gb` * `pro-16gb` * `pro-32gb` * `pro-64gb` * `pro-128gb` * `pro-192gb` * `pro-256gb` * `pro-384gb` * `pro-512gb` * `accelerated-16gb` * `accelerated-32gb` * `accelerated-64gb` * `accelerated-128gb` * `accelerated-256gb` * `accelerated-384gb` * `accelerated-512gb` * `accelerated-768gb` * `accelerated-1024gb` **[Legacy instance types](https://render.com/docs/postgresql-legacy-instance-types):** * `starter` * `standard` * `pro` * `pro plus` You cannot create new databases on a [legacy instance type](https://render.com/docs/postgresql-legacy-instance-types). You can move a database from a legacy instance type to a current instance type, but you can't move it back. **If you omit this field:** * Render uses `basic-256mb` for a new database. * Render retains the current instance type for an existing database. |
+| ###### [](http://render.com/docs/blueprint-spec#previewplan)`previewPlan` | The instance type to use for this database in [preview environments](https://render.com/docs/preview-environments). If you omit this field, preview instances use the same instance type as the primary database (specified by [`plan`](http://render.com/docs/blueprint-spec#plan-1)). If your primary database uses a new [flexible instance type](https://render.com/docs/postgresql-refresh), you cannot specify a _non_-flexible instance type for `previewPlan` (or vice versa). |
+| ###### [](http://render.com/docs/blueprint-spec#disksizegb)`diskSizeGB` | The database's disk size, in GB. Not valid for [legacy instance types](https://render.com/docs/postgresql-legacy-instance-types), which have a fixed disk size. This value must be either `1` or a multiple of `5`. You can increase disk size, but you can't _decrease_ it. **If you omit this field:** * For a new database, Render uses a default disk size based on the instance type's tier: * Free: 1 GB * Basic: 15 GB * Pro: 100 GB * Accelerated: 250 GB * For an existing database, Render retains the current disk size. |
+| ###### [](http://render.com/docs/blueprint-spec#previewdisksizegb)`previewDiskSizeGB` | The disk size to use for this database in [preview environments](https://render.com/docs/preview-environments). If you omit this field, preview instances use the same disk size as the primary database (specified by [`diskSizeGB`](http://render.com/docs/blueprint-spec#disksizegb)). |
+| ###### [](http://render.com/docs/blueprint-spec#storageautoscalingenabled)`storageAutoscalingEnabled` | If `true`, enables [storage autoscaling](https://render.com/docs/postgresql-creating-connecting#storage-autoscaling) for the database. If `false`, disables storage autoscaling. Not valid for [legacy instance types](https://render.com/docs/postgresql-legacy-instance-types), which have a fixed disk size. **If you omit this field:** * Render uses `false` for a new database. * Render retains the current value for an existing database. |
+| ###### [](http://render.com/docs/blueprint-spec#region-1)`region` | The region to deploy the instance to. One of the following: * `oregon` (default) * `ohio` * `virginia` * `frankfurt` * `singapore` You can't modify this value after creation. If omitted, the default value is `oregon`. |
+| ###### [](http://render.com/docs/blueprint-spec#ipallowlist-2)`ipAllowList` | A list of the IP address ranges allowed to connect to your database over the public internet. **If you omit this field:** * Render allows all IPs for a new database (all connections require valid credentials). * Render retains the current IP ranges for an existing database. For details, see [Inbound IP rules](http://render.com/docs/blueprint-spec#inbound-ip-rules). |
+| ###### [](http://render.com/docs/blueprint-spec#connectionpool)`connectionPool` | The type of connection pool to operate in front of the database, if any. One of the following: * `pgbouncer` * `none` **If you omit this field:** * Render uses `none` for a new database. * Render retains the current setting for an existing database. For details, see [Connection Pooling for Render Postgres](https://render.com/docs/postgresql-connection-pooling). |
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#postgresmajorversion)`postgresMajorVersion` | The major version number of PostgreSQL to use, as a string (e.g., `"17"`). If omitted, Render uses the most recent version supported by the platform (currently 18). You can't modify this value after creation. |
+| ###### [](http://render.com/docs/blueprint-spec#databasename)`databaseName` | The name of your database in the PostgreSQL instance. This is different from the [`name`](http://render.com/docs/blueprint-spec#name-1) of the Render Postgres instance itself. If omitted, Render automatically generates a name for the database based on [`name`](http://render.com/docs/blueprint-spec#name-1). You can't modify this value after creation. |
+| ###### [](http://render.com/docs/blueprint-spec#user)`user` | The name of the PostgreSQL user to create for your instance. If omitted, Render automatically generates a name for the database based on [`name`](http://render.com/docs/blueprint-spec#name-1). You can't modify this value after creation. |
+
+You can add two types of replica to a Render Postgres instance:
+
+*   [Read replicas](http://render.com/docs/blueprint-spec#readreplicas) for increased query throughput
+*   A [high availability standby](http://render.com/docs/blueprint-spec#highavailability) for rapid recovery from primary instance failures
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#readreplicas)`readReplicas` | Add one or more read replicas to a Render Postgres instance with the following syntax: yaml readReplicas: - name: my-db-replica Note the following: * You can add up to five read replicas to a given Render Postgres instance. * If you omit this field, Render _preserves_ any existing read replicas for the instance. * If you provide different `name` values from a database's existing read replicas, Render creates a _new_ replica for each new name and _destroys_ any existing replicas that don't match any provided name. * If you provide an empty list (e.g., `readReplicas: []`), Render destroys any existing replicas and does _not_ create new replicas. * You can reference a read replica's properties in another service's environment variables, as you would for any other database. See [Referencing service properties](http://render.com/docs/blueprint-spec#referencing-service-properties). For more information, see [Read Replicas for Render Postgres](https://render.com/docs/postgresql-read-replicas). |
+| ###### [](http://render.com/docs/blueprint-spec#highavailability)`highAvailability` | Add a high availability **standby** to a Render Postgres instance with the following syntax: yaml highAvailability: enabled: true **For your database to support high availability, it _must_:** * Belong to a [**Pro** workspace](https://render.com/docs/platform-features-by-plan) or higher * Use the **Pro** instance type or higher * Use **PostgreSQL version 13 or later** For more information, see [High Availability for Render Postgres](https://render.com/docs/postgresql-high-availability). |
+
+Configure which IP addresses can access your Render resources over the public internet using the `ipAllowList` field:
+
+yaml
+
+ipAllowList:
+
+- source: 203.0.113.4/30
+
+description: office
+
+Different resources have different requirements for setting `ipAllowList`:
+
+| Service type | Workspace plan | Required |
+| --- | --- | --- |
+| Render Postgres | Any | Optional (defaults to allow all) |
+| Render Key Value | Any | **Required** |
+| Web services and static sites | **Scale** or **Enterprise**[plan](https://render.com/pricing) | Optional (defaults to allow all) |
+
+If you omit the `ipAllowList` field from a web service, static site, or Render Postgres instance, the resource allows connections from any IP. The `ipAllowList` field is **required** for Render Key Value instances.
+
+Each `ipAllowList` entry supports the following fields:
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#source)`source` | **Required.** The IP address or range in [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_blocks), such as `203.0.113.4/30`. |
+| ###### [](http://render.com/docs/blueprint-spec#description)`description` | A label for this IP address or range (e.g., `office`, `home`, `VPN`). |
+
+To block _all_ external connections, set `ipAllowList` to an empty list:
+
+yaml
+
+ipAllowList: []
+
+To _allow_ all external connections, provide the following CIDR block:
+
+yaml
+
+ipAllowList:
+
+- source: 0.0.0.0/0
+
+description: everywhere
+
+For more details, see [Inbound IP Rules](https://render.com/docs/inbound-ip-rules).
+
+## [](http://render.com/docs/blueprint-spec#projects-and-environments)Projects and environments
+
+Learn more about [projects and environments](https://render.com/docs/projects).
+
+**Show an example project definition**
+
+yaml
+
+projects:
+
+- name: my-project
+
+environments:
+
+- name: production
+
+services:
+
+- name: my-web-service
+
+type: web
+
+runtime: node
+
+buildCommand: npm install
+
+startCommand: npm start
+
+envVars:
+
+- key: MY_ENV_VAR
+
+value: my-value
+
+databases:
+
+- name: my-database
+
+plan: basic-256mb
+
+envVarGroups:
+
+- name: my-env-group
+
+envVars:
+
+- key: MY_ENV_VAR
+
+value: my-value
+
+networking:
+
+isolation: enabled
+
+permissions:
+
+protection: enabled
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#name-2)`name` | **Required.** The project's name. |
+| ###### [](http://render.com/docs/blueprint-spec#environments)`environments` | **Required.** A list of the project's [environments](http://render.com/docs/blueprint-spec#environment-fields). Each project must have at least one environment. |
+
+| Field | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#name-3)`name` | **Required.** The environment's name. |
+| ###### [](http://render.com/docs/blueprint-spec#services-1)`services` | A list of the [services](http://render.com/docs/blueprint-spec#services) that belong to the environment. Matches the format of the root-level [`services`](http://render.com/docs/blueprint-spec#services) field. **Do not define the same service in more than one location.** |
+| ###### [](http://render.com/docs/blueprint-spec#databases-1)`databases` | A list of the Render Postgres databases that belong to the environment. Matches the format of the root-level [`databases`](http://render.com/docs/blueprint-spec#databases) field. **Do not define the same database in more than one location.** |
+| ###### [](http://render.com/docs/blueprint-spec#envvargroups-1)`envVarGroups` | A list of the environment groups that belong to the environment. Matches the format of the root-level [`envVarGroups`](http://render.com/docs/blueprint-spec#environment-groups) field. **Do not define the same environment group in more than one location.** |
+| ###### [](http://render.com/docs/blueprint-spec#networkingisolation)`networking.isolation` | Controls [private network isolation](https://render.com/docs/projects#blocking-cross-environment-traffic) for the environment. yaml networking: isolation: enabled Supported values include: * `enabled` * `disabled` If omitted, the default value is `disabled`. |
+| ###### [](http://render.com/docs/blueprint-spec#permissonsprotection)`permissons.protection` | Controls whether the environment is [protected](https://render.com/docs/projects#protected-environments), which prevents destructive actions by non-admin workspace members. yaml permissions: protection: enabled Supported values include: * `enabled` * `disabled` If omitted, the default value is `disabled`. |
+
+Set names and values for a service's environment variables in the `envVars` field:
+
+yaml
+
+envVars:
+
+- key: API_BASE_URL
+
+value: https://api.example.com
+
+- key: APP_SECRET
+
+generateValue: true
+
+- key: STRIPE_API_KEY
+
+sync: false
+
+- key: DATABASE_URL
+
+fromDatabase:
+
+name: mydatabase
+
+property: connectionString
+
+- key: MINIO_PASSWORD
+
+fromService:
+
+name: minio
+
+type: pserv
+
+envVarKey: MINIO_ROOT_PASSWORD
+
+- fromGroup: my-env-group
+
+A Blueprint can create new environment variables or modify the values of existing ones. Render _preserves_ existing environment variables, even if you omit them from the Blueprint file.
+
+Environment variables can dynamically reference properties from services in your workspace (including the current service).
+
+These environment variables update to match the current value of the referenced property on each Blueprint sync. They do _not_ update immediately whenever that property changes.
+
+*   **To reference a value from _most_ service types,** use the `fromService` field.
+*   **To reference from Render Postgres,** use `fromDatabase`.
+
+See example definitions below. All fields shown in each example are required.
+
+render.yaml
+
+yaml
+
+envVars:
+
+- key: MINIO_HOST
+
+fromService:
+
+name: minio
+
+type: pserv
+
+property: host
+
+- key: MINIO_PASSWORD
+
+fromService:
+
+name: minio
+
+type: pserv
+
+envVarKey: MINIO_ROOT_PASSWORD
+
+- key: DATABASE_URL
+
+fromDatabase:
+
+name: mydatabase
+
+property: connectionString
+
+You _can_ reference a service that is not defined in the Blueprint file, but that service _must_ exist in your workspace. Otherwise, your Blueprint fails to sync.
+
+To self-reference, provide the service's own `name`:
+
+yaml
+
+services:
+
+- type: web
+
+name: my-app
+
+runtime: node
+
+envVars:
+
+- key: APP_HOST
+
+fromService:
+
+name: my-app
+
+type: web
+
+envVarKey: RENDER_EXTERNAL_HOSTNAME
+
+Self-referencing can be useful for exposing a [Render-default environment variable](https://render.com/docs/environment-variables) at an additional key that your framework expects. The example above duplicates `RENDER_EXTERNAL_HOSTNAME` as `APP_HOST`.
+
+In addition to referencing other environment variables, you can reference the following properties of your services. As indicated, most properties are only available for specific service types.
+
+| Property | Description |
+| --- | --- |
+| ###### [](http://render.com/docs/blueprint-spec#host)`host` | Web services and private services only. The service's hostname on the private network. |
+| ###### [](http://render.com/docs/blueprint-spec#port)`port` | Web services and private services only. The port of the service's HTTP server. |
+| ###### [](http://render.com/docs/blueprint-spec#hostport)`hostport` | Web services and private services only. The service's [host](http://render.com/docs/blueprint-spec#host) and [port](http://render.com/docs/blueprint-spec#port), separated by a colon. Use this value to connect to the service over the private network. Example: `my-service:10000` |
+| ###### [](http://render.com/docs/blueprint-spec#connectionstring)`connectionString` | Render Postgres and Key Value only. The URL for connecting to the datastore over the private network. * **For Render Postgres,** has the format `postgresql://user:password@host:port/database` * **For Render Key Value,** has the format `redis://red-xxxxxxxxxxxxxxxxxxxx:6379` (or `redis://user:password@red-xxxxxxxxxxxxxxxxxxxx:6379` if [internal authentication](https://render.com/docs/key-value#requiring-auth-for-internal-connections) is enabled) |
+| ###### [](http://render.com/docs/blueprint-spec#connectionpoolstring)`connectionPoolString` | Render Postgres only. The URL for connecting to the database through its managed [connection pool](https://render.com/docs/postgresql-connection-pooling) (if enabled). Has the format `postgresql://user:password@host:port/database` |
+| ###### [](http://render.com/docs/blueprint-spec#user-1)`user` | Render Postgres only. The name of the user for your PostgreSQL database. Included as a component of [`connectionString`](http://render.com/docs/blueprint-spec#connectionstring). |
+| ###### [](http://render.com/docs/blueprint-spec#password)`password` | Render Postgres only. The password for your PostgreSQL database. Included as a component of [`connectionString`](http://render.com/docs/blueprint-spec#connectionstring). |
+| ###### [](http://render.com/docs/blueprint-spec#database)`database` | Render Postgres only. The name of your database within the PostgreSQL instance (_not_ the `name` of the PostgreSQL instance itself). Included as a component of [`connectionString`](http://render.com/docs/blueprint-spec#connectionstring). |
+
+Some environment variables contain secret credentials, such an API key or access token. **Do not hardcode these values in your Blueprint file!**
+
+Instead, you can define these environment variables with `sync: false`, like so:
+
+yaml
+
+- key: STRIPE_API_KEY
+
+sync: false
+
+During the initial Blueprint creation flow in the [Render Dashboard](https://dashboard.render.com/), you're prompted to provide a value for each environment variable with `sync: false`:
+
+![Image 2: render.yaml sync false](https://render.com/docs-assets/dafa88db19767893d74a2776ecf02166989ac99052add5f6c360d5683e1d85bc/syncfalse.png)
+
+**Note the following limitations:**
+
+*   Render prompts you for these values _only during the initial Blueprint creation flow_. 
+    *   When you update an existing Blueprint, Render _ignores_ any environment variables with `sync: false`.
+    *   Add any new secret credentials to your existing services [manually](https://render.com/docs/configure-environment-variables#setting-environment-variables).
+
+*   Render does not include `sync: false` environment variables in [preview environments](https://render.com/docs/preview-environments). 
+    *   As a workaround, you can _also_ manually define the environment variable in an environment group that you apply to the service. For details, see [this page](https://render.com/docs/preview-environments#placeholder-environment-variables).
+
+*   You can't apply `sync: false` to environment variables defined in an [environment group](http://render.com/docs/blueprint-spec#environment-groups). 
+    *   If you do this, Render ignores the environment variable.
+
+### [](http://render.com/docs/blueprint-spec#generating-random-secrets)Generating random secrets
+
+You can generate a random value for an environment variable by setting `generateValue: true`:
+
+yaml
+
+- key: JWT_SECRET
+
+generateValue: true
+
+If the environment variable doesn't already exist, Render adds it and sets its value to a randomized, base64-encoded, 256-bit value (looks like this: `B0jrphAPOY7pg92AN0c9MN4yecczLMdwnx4OkA1KFUk=`).
+
+You can define [environment groups](https://render.com/docs/configure-environment-variables#environment-groups) in the root-level `envVarGroups` field of your Blueprint file:
+
+yaml
+
+envVarGroups:
+
+- name: my-env-group
+
+envVars:
+
+- key: CONCURRENCY
+
+value: 2
+
+- key: SHARED_SECRET
+
+generateValue: true
+
+Each environment group has a `name` and a list of zero or more `envVars`. Definitions in the `envVars` list can use some (_but not all_) of the same formats as [`envVars` for a service](http://render.com/docs/blueprint-spec#setting-environment-variables):
+
+*   An environment group can't [reference values](http://render.com/docs/blueprint-spec#referencing-service-properties) from your services, or from other environment groups.
+*   You can't define an environment variable with `sync: false` in an environment group.
+
+Render does not support variable interpolation in Blueprint files.
+
+To achieve a similar behavior, pair environment variables with a build or start script that performs the interpolation for you.
+
+Use the `previewValue` field to override environment variable values for web and private services in preview environments:
+
+yaml
+
+envVars:
+
+- key: API_BASE_URL
+
+value: https://api.example.com
+
+previewValue: https://api-staging.example.com
+
+To learn more, see [Preview environments](https://render.com/docs/preview-environments#environment-variables).
+
