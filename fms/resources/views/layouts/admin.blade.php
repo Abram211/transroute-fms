@@ -161,7 +161,7 @@
 
 <body class="bg-background text-on-background font-body-md">
     <aside
-        class="h-screen w-64 fixed left-0 top-0 bg-primary text-on-primary shadow-sm border-r border-outline-variant/30 flex flex-col p-md gap-base z-50">
+        class="h-screen w-64 fixed left-0 top-0 bg-primary text-on-primary shadow-sm border-r border-outline-variant/30 flex flex-col p-md gap-base z-50 overflow-y-auto scroll-smooth">
         <div class="mb-lg">
             <h1 class="font-display-lg text-display-lg font-bold text-on-primary"
                 style="font-size:28px;line-height:1.2">TransRoute</h1>
