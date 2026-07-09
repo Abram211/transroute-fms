@@ -10,8 +10,8 @@ return new class extends Migration {
             $t->string('airline')->default('TransRoute Airways');
             $t->foreignId('departure_airport_id')->constrained('airports')->onDelete('cascade');
             $t->foreignId('arrival_airport_id')->constrained('airports')->onDelete('cascade');
-            $t->dateTime('departure_time');
-            $t->dateTime('arrival_time');
+            $t->timestamp('departure_time');
+            $t->timestamp('arrival_time');
             $t->string('gate')->nullable();
             $t->integer('capacity')->default(150);
             $t->decimal('base_fare', 10, 2)->default(100);

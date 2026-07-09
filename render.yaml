@@ -1,9 +1,13 @@
 services:
   - type: web
     name: transroute-fms
-    runtime: docker
-    dockerContext: ./fms
-    dockerfilePath: ./fms/Dockerfile
+    env: php
+    buildCommand:  bash build.sh
+      composer install --no-dev --optimize-autoloader
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
     envVars:
       - key: APP_ENV
         value: production
@@ -14,7 +18,7 @@ services:
       - key: APP_URL
         value: https://transroute-fms.onrender.com
       - key: DB_CONNECTION
-        value: mysql
+        value: pgsql
       - key: DB_HOST
         fromDatabase:
           name: transroute-db
@@ -46,3 +50,4 @@ databases:
   - name: transroute-db
     databaseName: transroute_fms
     plan: free
+    ipAllowList: []
