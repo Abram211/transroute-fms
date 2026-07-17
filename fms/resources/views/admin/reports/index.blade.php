@@ -3,10 +3,27 @@
 @section('page-title', 'Flight Reports')
 
 @section('content')
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-md mb-lg">
+        <div>
+            <h2 class="font-headline-md text-headline-md text-primary">{{ $label }}</h2>
+            <p class="text-sm text-on-surface-variant">
+                Showing activity from {{ $from->format('M d, Y') }} to {{ $to->format('M d, Y') }}.
+            </p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            @foreach(['daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly', 'annual' => 'Annual'] as $value => $labelText)
+                <a href="{{ route('admin.reports.index', ['period' => $value]) }}"
+                    class="px-3 py-2 rounded-lg text-sm font-semibold {{ $period === $value ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface' }}">
+                    {{ $labelText }}
+                </a>
+            @endforeach
+        </div>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-4 gap-md mb-lg">
         <div class="bg-white rounded-xl border border-outline-variant/30 p-md">
             <div class="text-2xl font-bold text-on-surface">{{ number_format($totals['passengers']) }}</div>
-            <div class="text-xs text-on-surface-variant font-label-caps uppercase">Total Passengers Carried</div>
+            <div class="text-xs text-on-surface-variant font-label-caps uppercase">Passengers Carried</div>
         </div>
         <div class="bg-white rounded-xl border border-outline-variant/30 p-md">
             <div class="text-2xl font-bold text-on-surface">{{ number_format($totals['tickets']) }}</div>
@@ -23,7 +40,7 @@
     </div>
 
     <div class="flex justify-end mb-md">
-        <a href="{{ route('admin.reports.download') }}"
+        <a href="{{ route('admin.reports.download', ['period' => $period]) }}"
             class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-caps text-label-caps flex items-center gap-2">
             <span class="material-symbols-outlined text-base">download</span> Download PDF Report
         </a>
@@ -61,7 +78,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="p-md text-center text-on-surface-variant">No flight data yet</td>
+                        <td colspan="6" class="p-md text-center text-on-surface-variant">No activity found for this period yet.</td>
                     </tr>
                 @endforelse
             </tbody>
