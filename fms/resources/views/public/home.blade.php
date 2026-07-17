@@ -174,9 +174,9 @@
                     href="#contact">Contact</a>
             </div>
             <div class="flex gap-base">
-                <a href="{{ route('login') }}"
+                <a href="{{ route('login') }}" target="_blank" rel="noopener"
                     class="hidden md:block px-4 py-2 text-primary font-label-caps text-label-caps hover:bg-primary/5 transition-all rounded-lg">Login</a>
-                <a href="{{ route('register') }}"
+                <a href="{{ route('register') }}" target="_blank" rel="noopener noreferrer"
                     class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-caps text-label-caps hover:opacity-90 transition-all shadow-sm">Signup</a>
             </div>
         </nav>
@@ -185,7 +185,7 @@
         <section class="relative h-[600px] flex items-center justify-center overflow-hidden">
             <div class="absolute inset-0 z-0">
                 <img class="w-full h-full object-cover" alt="Aviation hub at dusk"
-                    src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1600&q=80" />
+                    src="{{ asset('images/flight2.jpg') }}" />
                 <div class="absolute inset-0 bg-gradient-to-r from-primary/90 to-transparent"></div>
             </div>
             <div class="relative z-10 max-w-container-max mx-auto px-6 lg:px-xl w-full text-white">
@@ -321,7 +321,7 @@
                 </div>
                 <div class="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
                     <img class="w-full h-full object-cover" alt="Aerial cargo hub"
-                        src="https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=1200&q=80" />
+                        src="{{ asset('images/flight.jpg') }}" />
                 </div>
             </div>
         </section>
