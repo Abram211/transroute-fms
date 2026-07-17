@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Passenger;
 use App\Http\Controllers\Controller;
 use App\Models\{Flight,Ticket};
 use App\Services\NotificationService;
+use App\Services\TicketDocumentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class BookingController extends Controller {
@@ -27,6 +28,16 @@ class BookingController extends Controller {
         ]);
         return redirect()->route('passenger.bookings.index')->with('success','Booking request submitted. Awaiting admin approval.');
     }
+    public function downloadReceipt(Ticket $ticket, TicketDocumentService $service){
+        abort_unless($ticket->user_id === Auth::id(), 403);
+
+        $pdf = $service->createTicketReceipt($ticket);
+
+        return response($pdf, 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="receipt-'.$ticket->ticket_no.'.pdf"');
+    }
+
     // Passengers are allowed to cancel tickets
     public function cancel(Ticket $ticket){
         abort_unless($ticket->user_id === Auth::id(), 403);

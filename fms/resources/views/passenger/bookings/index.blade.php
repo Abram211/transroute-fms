@@ -37,6 +37,8 @@
                         @php $statusColors = ['pending'=>'bg-yellow-100 text-yellow-700','confirmed'=>'bg-green-100 text-green-700','cancelled'=>'bg-red-100 text-red-700','no_show'=>'bg-orange-100 text-orange-700','completed'=>'bg-gray-100 text-gray-700']; @endphp
                         <span
                             class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusColors[$ticket->status] ?? '' }}">{{ ucfirst(str_replace('_', ' ', $ticket->status)) }}</span>
+                        <a href="{{ route('passenger.bookings.receipt', $ticket) }}"
+                            class="px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-semibold hover:bg-primary/20">Download PDF</a>
                         @if ($ticket->isCancellable())
                             <form method="POST" action="{{ route('passenger.bookings.cancel', $ticket) }}"
                                 onsubmit="return confirm('Cancel this booking?')">

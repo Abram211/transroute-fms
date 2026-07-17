@@ -37,6 +37,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     Route::get('/bookings', [Admin\BookingController::class, 'index'])->name('bookings.index');
     Route::post('/bookings', [Admin\BookingController::class, 'store'])->name('bookings.store');
+    Route::get('/bookings/{ticket}/receipt', [Admin\BookingController::class, 'downloadReceipt'])->name('bookings.receipt');
     Route::post('/bookings/{ticket}/approve', [Admin\BookingController::class, 'approve'])->name('bookings.approve');
     Route::post('/bookings/{ticket}/cancel', [Admin\BookingController::class, 'cancel'])->name('bookings.cancel');
 
@@ -58,6 +59,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::delete('/crew/{crew}', [Admin\CrewController::class, 'destroy'])->name('crew.destroy');
 
     Route::get('/reports', [Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/download', [Admin\ReportController::class, 'download'])->name('reports.download');
     Route::get('/passengers', [Admin\PassengerController::class, 'index'])->name('passengers.index');
 });
 
@@ -69,6 +71,7 @@ Route::prefix('passenger')->name('passenger.')->middleware(['auth', 'role:passen
 
     Route::get('/bookings', [Passenger\BookingController::class, 'index'])->name('bookings.index');
     Route::post('/bookings', [Passenger\BookingController::class, 'store'])->name('bookings.store');
+    Route::get('/bookings/{ticket}/receipt', [Passenger\BookingController::class, 'downloadReceipt'])->name('bookings.receipt');
     Route::post('/bookings/{ticket}/cancel', [Passenger\BookingController::class, 'cancel'])->name('bookings.cancel');
 
     // Read + update status only (admin-assigned)

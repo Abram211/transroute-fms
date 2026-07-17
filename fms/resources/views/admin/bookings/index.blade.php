@@ -41,7 +41,9 @@
                             <td class="p-sm border-b border-outline-variant/20">{{ $ticket->seat_no ?? '—' }}</td>
                             <td class="p-sm border-b border-outline-variant/20">${{ number_format($ticket->fare, 2) }}</td>
                             <td class="p-sm border-b border-outline-variant/20">
-                                <div class="flex gap-1">
+                                <div class="flex gap-1 flex-wrap">
+                                    <a href="{{ route('admin.bookings.receipt', $ticket) }}"
+                                        class="px-2 py-1 bg-primary/10 text-primary rounded-lg text-xs font-semibold">PDF</a>
                                     <form method="POST" action="{{ route('admin.bookings.approve', $ticket) }}">
                                         @csrf
                                         <button type="submit"
@@ -93,13 +95,17 @@
                             <td class="p-sm border-b border-outline-variant/20">
                                 {{ $ticket->flight->departure_time->format('M d, g:i A') }}</td>
                             <td class="p-sm border-b border-outline-variant/20">
-                                <form method="POST" action="{{ route('admin.bookings.cancel', $ticket) }}"
-                                    onsubmit="return confirm('Mark this ticket cancelled (no-show)? Record is retained, not deleted.')">
-                                    @csrf
-                                    <button type="submit"
-                                        class="px-2 py-1 bg-red-100 text-red-700 rounded-lg text-xs font-semibold">No-Show /
-                                        Cancel</button>
-                                </form>
+                                <div class="flex gap-1 flex-wrap">
+                                    <a href="{{ route('admin.bookings.receipt', $ticket) }}"
+                                        class="px-2 py-1 bg-primary/10 text-primary rounded-lg text-xs font-semibold">PDF</a>
+                                    <form method="POST" action="{{ route('admin.bookings.cancel', $ticket) }}"
+                                        onsubmit="return confirm('Mark this ticket cancelled (no-show)? Record is retained, not deleted.')">
+                                        @csrf
+                                        <button type="submit"
+                                            class="px-2 py-1 bg-red-100 text-red-700 rounded-lg text-xs font-semibold">No-Show /
+                                            Cancel</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @empty

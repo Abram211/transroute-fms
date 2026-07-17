@@ -22,6 +22,13 @@
         </div>
     </div>
 
+    <div class="flex justify-end mb-md">
+        <a href="{{ route('admin.reports.download') }}"
+            class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-caps text-label-caps flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">download</span> Download PDF Report
+        </a>
+    </div>
+
     <div class="bg-white rounded-xl border border-outline-variant/30 overflow-hidden">
         <div class="p-md border-b border-outline-variant/30">
             <h3 class="font-headline-md text-headline-md text-primary">Per-Flight Breakdown</h3>

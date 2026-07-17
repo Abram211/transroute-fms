@@ -3,8 +3,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\{Flight,Ticket,User};
 use App\Services\NotificationService;
+use App\Services\TicketDocumentService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 class BookingController extends Controller {
     public function index(){
         $pendingTickets = Ticket::with('passenger','flight.departureAirport','flight.arrivalAirport')
@@ -31,6 +31,14 @@ class BookingController extends Controller {
         app(NotificationService::class)->notifyBookingConfirmed($ticket);
         return redirect()->route('admin.bookings.index')->with('success','Booking created and confirmed.');
     }
+    public function downloadReceipt(Ticket $ticket, TicketDocumentService $service){
+        $pdf = $service->createTicketReceipt($ticket);
+
+        return response($pdf, 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="receipt-'.$ticket->ticket_no.'.pdf"');
+    }
+
     public function approve(Ticket $ticket){
         $ticket->update(['status'=>'confirmed']);
         app(NotificationService::class)->notifyBookingConfirmed($ticket);
