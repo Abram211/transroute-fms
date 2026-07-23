@@ -2,13 +2,11 @@ services:
   - type: web
     name: transroute-fms
     env: php
-    buildCommand:  bash build.sh
-      composer install --no-dev --optimize-autoloader
-      php artisan config:cache
-      php artisan route:cache
-      php artisan view:cache
+    buildCommand: bash build.sh
     startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
     envVars:
+      - key: APP_NAME
+        value: TransRoute FMS
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
