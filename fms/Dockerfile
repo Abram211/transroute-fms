@@ -11,9 +11,11 @@ RUN apt-get update \
         libpng-dev \
         libjpeg-dev \
         libfreetype6-dev \
+        libpq-dev \
         default-mysql-client \
+        postgresql-client \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl gd bcmath intl \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip exif pcntl gd bcmath intl \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
