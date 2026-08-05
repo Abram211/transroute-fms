@@ -28,8 +28,6 @@ RUN composer install --no-interaction --prefer-dist --no-progress --optimize-aut
 COPY . /var/www/html
 
 RUN php artisan package:discover --ansi \
-    && cp .env.example .env \
-    && php artisan key:generate \
     && chmod -R 775 storage bootstrap/cache
 
 ENV PORT=8000
