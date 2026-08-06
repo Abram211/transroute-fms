@@ -9,7 +9,7 @@ class Flight extends Model {
     public function tickets(){ return $this->hasMany(Ticket::class); }
     public function shipments(){ return $this->hasMany(Shipment::class); }
     public function crewMembers(){ return $this->belongsToMany(CrewMember::class,'flight_crew_member'); }
-    public function getJourneyAttribute():string { return $this->departureAirport->code.' → '.$this->arrivalAirport->code; }
+    public function getJourneyAttribute():string { return (optional($this->departureAirport)->code ?? '—').' → '.(optional($this->arrivalAirport)->code ?? '—'); }
     public function getBookedSeatsCountAttribute():int { return $this->tickets()->whereIn('status',['pending','confirmed'])->count(); }
     public function getSeatsAvailableAttribute():int { return max(0, $this->capacity - $this->booked_seats_count); }
     public function isPast():bool { return now()->gt($this->arrival_time); }
