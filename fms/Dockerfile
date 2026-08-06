@@ -1,3 +1,11 @@
+FROM composer:2.8.6 AS vendor
+
+WORKDIR /var/www/html
+
+COPY composer.json composer.lock* ./
+COPY . ./
+RUN composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader --no-dev --no-scripts
+
 FROM php:8.2-cli
 
 RUN apt-get update \
@@ -16,16 +24,13 @@ RUN apt-get update \
         postgresql-client \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip exif pcntl gd bcmath intl \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
 
-COPY composer.json composer.lock* ./
-RUN composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader --no-scripts
-
 COPY . /var/www/html
+COPY --from=vendor /var/www/html/vendor ./vendor
 
 RUN php artisan package:discover --ansi \
     && chmod -R 775 storage bootstrap/cache
