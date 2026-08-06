@@ -41,6 +41,16 @@ php artisan serve
 
 Visit `http://localhost:8000`.
 
+## Secrets & Credentials
+
+Do NOT commit sensitive values (API keys, passwords, database credentials) into the repository. Use the provided `.env.example` as a template and keep your actual values in a local `.env` file which is ignored by Git. In production, prefer environment variables managed by your hosting platform or a secrets manager, and rotate credentials regularly.
+
+Quick checklist:
+- Keep `fms/.env` out of version control (already listed in `.gitignore`).
+- Use `fms/.env.example` for onboarding and docs.
+- Rotate DB credentials if they were ever committed or shared.
+- For CI/CD or container runs, inject secrets via the platform's secure variables instead of embedding them in files.
+
 ## Seeded accounts (all passwords: `password`)
 - Admin: `admin@transroute.com` → `/admin/login`
 - Passenger: `sarah.j@example.com`, `marcus.t@example.com`, `john.doe@example.com`, `alex.rivera@example.com` → `/login`

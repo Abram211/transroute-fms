@@ -1,3 +1,22 @@
+FROM php:8.2-cli
+
+# Install system deps and PHP extensions for PostgreSQL
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       libpq-dev \
+       unzip \
+       git \
+       ca-certificates \
+       libssl-dev \
+    && docker-php-ext-install pdo_pgsql \
+    && rm -rf /var/lib/apt/lists/*
+
+# Use Composer from official image
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+CMD ["php", "artisan"]
 FROM composer:2.8.6 AS vendor
 
 WORKDIR /var/www/html
