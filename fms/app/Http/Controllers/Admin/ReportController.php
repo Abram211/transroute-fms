@@ -54,6 +54,9 @@ class ReportController extends Controller {
 
                 return [
                     'flight' => $flight,
+                    'flight_number' => optional($flight)->flight_number ?? 'Unknown flight',
+                    'departure_city' => optional($flight->departureAirport)->city ?? 'Unknown',
+                    'arrival_city' => optional($flight->arrivalAirport)->city ?? 'Unknown',
                     'passenger_count' => $tickets->count(),
                     'ticket_revenue' => $tickets->sum('fare'),
                     'weight' => $shipments->sum('weight'),

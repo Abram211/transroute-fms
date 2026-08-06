@@ -65,10 +65,10 @@
                 @forelse($report as $row)
                     <tr class="zebra-row">
                         <td class="p-sm border-b border-outline-variant/20 font-semibold">
-                            {{ $row['flight']->flight_number }}</td>
+                            {{ $row['flight_number'] }}</td>
                         <td class="p-sm border-b border-outline-variant/20">
-                            {{ optional($row['flight']->departureAirport)->city ?? 'Unknown' }} →
-                            {{ optional($row['flight']->arrivalAirport)->city ?? 'Unknown' }}</td>
+                            {{ $row['departure_city'] }} →
+                            {{ $row['arrival_city'] }}</td>
                         <td class="p-sm border-b border-outline-variant/20">{{ $row['passenger_count'] }}</td>
                         <td class="p-sm border-b border-outline-variant/20">${{ number_format($row['ticket_revenue'], 2) }}
                         </td>
