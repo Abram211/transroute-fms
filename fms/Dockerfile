@@ -4,7 +4,11 @@ WORKDIR /var/www/html
 
 COPY composer.json composer.lock* ./
 COPY . ./
-RUN composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader --no-dev --no-scripts
+RUN if [ -d vendor ]; then \
+        echo "Using vendored dependencies"; \
+    else \
+        composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader --no-dev --no-scripts; \
+    fi
 
 FROM php:8.2-cli
 
