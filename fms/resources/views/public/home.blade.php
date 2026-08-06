@@ -277,7 +277,7 @@
                                     <td class="p-md border-b border-outline-variant/30 font-semibold">
                                         {{ $flight->departure_time->format('l') }}</td>
                                     <td class="p-md border-b border-outline-variant/30">
-                                        {{ $flight->departureAirport->city }} To {{ $flight->arrivalAirport->city }}
+                                        {{ optional($flight->departureAirport)->city ?? 'Unknown' }} To {{ optional($flight->arrivalAirport)->city ?? 'Unknown' }}
                                     </td>
                                     <td class="p-md border-b border-outline-variant/30">
                                         {{ $flight->departure_time->format('g:i a') }}</td>

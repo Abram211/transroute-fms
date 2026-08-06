@@ -26,9 +26,9 @@
                         <div>
                             <div class="font-semibold text-on-surface">{{ $ticket->ticket_no }} —
                                 {{ $ticket->flight->flight_number }}</div>
-                            <div class="text-xs text-on-surface-variant">{{ $ticket->flight->departureAirport->city }} →
-                                {{ $ticket->flight->arrivalAirport->city }} ·
-                                {{ $ticket->flight->departure_time->format('M d, Y g:i A') }}</div>
+                            <div class="text-xs text-on-surface-variant">{{ optional(optional($ticket->flight)->departureAirport)->city ?? 'Unknown' }} →
+                                {{ optional(optional($ticket->flight)->arrivalAirport)->city ?? 'Unknown' }} ·
+                                {{ optional(optional($ticket->flight)->departure_time)->format('M d, Y g:i A') ?? 'TBD' }}</div>
                             <div class="text-xs text-on-surface-variant">Seat {{ $ticket->seat_no ?? 'Unassigned' }} ·
                                 ${{ number_format($ticket->fare, 2) }}</div>
                         </div>
@@ -71,8 +71,8 @@
                             <option value="">Choose a flight...</option>
                             @foreach ($upcomingFlights as $f)
                                 <option value="{{ $f->id }}" {{ $f->seats_available <= 0 ? 'disabled' : '' }}>
-                                    {{ $f->flight_number }} — {{ $f->departureAirport->city }} →
-                                    {{ $f->arrivalAirport->city }} ({{ $f->departure_time->format('M d, g:i A') }}) —
+                                    {{ $f->flight_number }} — {{ optional($f->departureAirport)->city ?? 'Unknown' }} →
+                                    {{ optional($f->arrivalAirport)->city ?? 'Unknown' }} ({{ optional($f->departure_time)->format('M d, g:i A') ?? 'TBD' }}) —
                                     ${{ number_format($f->base_fare, 2) }} {{ $f->seats_available <= 0 ? '(FULL)' : '' }}
                                 </option>
                             @endforeach

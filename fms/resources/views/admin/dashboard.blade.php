@@ -62,8 +62,8 @@
                 @forelse($recentFlights as $flight)
                     <tr class="zebra-row">
                         <td class="p-sm border-b border-outline-variant/20 font-semibold">{{ $flight->flight_number }}</td>
-                        <td class="p-sm border-b border-outline-variant/20">{{ $flight->departureAirport->city }} →
-                            {{ $flight->arrivalAirport->city }}</td>
+                        <td class="p-sm border-b border-outline-variant/20">{{ optional($flight->departureAirport)->city ?? 'Unknown' }} →
+                            {{ optional($flight->arrivalAirport)->city ?? 'Unknown' }}</td>
                         <td class="p-sm border-b border-outline-variant/20">
                             {{ $flight->departure_time->format('M d, g:i A') }}</td>
                         <td class="p-sm border-b border-outline-variant/20">{{ $flight->gate ?? '—' }}</td>

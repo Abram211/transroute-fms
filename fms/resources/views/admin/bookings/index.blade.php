@@ -34,9 +34,9 @@
                     @forelse($pendingTickets as $ticket)
                         <tr class="zebra-row">
                             <td class="p-sm border-b border-outline-variant/20 font-semibold">{{ $ticket->ticket_no }}</td>
-                            <td class="p-sm border-b border-outline-variant/20">{{ $ticket->passenger->name }}</td>
-                            <td class="p-sm border-b border-outline-variant/20">{{ $ticket->flight->flight_number }} —
-                                {{ $ticket->flight->departureAirport->city }} → {{ $ticket->flight->arrivalAirport->city }}
+                            <td class="p-sm border-b border-outline-variant/20">{{ optional($ticket->passenger)->name ?? 'Unknown passenger' }}</td>
+                            <td class="p-sm border-b border-outline-variant/20">{{ optional($ticket->flight)->flight_number ?? 'Unknown flight' }} —
+                                {{ optional(optional($ticket->flight)->departureAirport)->city ?? 'Unknown' }} → {{ optional(optional($ticket->flight)->arrivalAirport)->city ?? 'Unknown' }}
                             </td>
                             <td class="p-sm border-b border-outline-variant/20">{{ $ticket->seat_no ?? '—' }}</td>
                             <td class="p-sm border-b border-outline-variant/20">${{ number_format($ticket->fare, 2) }}</td>
@@ -87,10 +87,10 @@
                     @forelse($confirmedTickets as $ticket)
                         <tr class="zebra-row">
                             <td class="p-sm border-b border-outline-variant/20 font-semibold">{{ $ticket->ticket_no }}</td>
-                            <td class="p-sm border-b border-outline-variant/20">{{ $ticket->passenger->name }}</td>
-                            <td class="p-sm border-b border-outline-variant/20">{{ $ticket->flight->flight_number }} —
-                                {{ $ticket->flight->departureAirport->city }} →
-                                {{ $ticket->flight->arrivalAirport->city }}</td>
+                            <td class="p-sm border-b border-outline-variant/20">{{ optional($ticket->passenger)->name ?? 'Unknown passenger' }}</td>
+                            <td class="p-sm border-b border-outline-variant/20">{{ optional($ticket->flight)->flight_number ?? 'Unknown flight' }} —
+                                {{ optional(optional($ticket->flight)->departureAirport)->city ?? 'Unknown' }} →
+                                {{ optional(optional($ticket->flight)->arrivalAirport)->city ?? 'Unknown' }}</td>
                             <td class="p-sm border-b border-outline-variant/20">{{ $ticket->seat_no ?? '—' }}</td>
                             <td class="p-sm border-b border-outline-variant/20">
                                 {{ $ticket->flight->departure_time->format('M d, g:i A') }}</td>
